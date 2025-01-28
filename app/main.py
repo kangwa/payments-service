@@ -16,7 +16,9 @@ Note:
 """
 
 from fastapi import FastAPI
-from app.interface.api import merchants, organizations, auth
+
+from app.core.auth.ports import api as auth_api
+from app.core.accounts.ports.api import merchant_api, organization_api
 
 project_description = """
    Payment Gateway microservice providing secure payment processing capabilities.
@@ -34,32 +36,32 @@ project_description = """
 
 
 app = FastAPI(
-   title="Payment Gateway API",
-   description=project_description,
-   version="0.1.0",
-   docs_url="/docs",
-   redoc_url="/redoc",
+    title="Payment Gateway API",
+    description=project_description,
+    version="0.1.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
 
 
 # API Routes
-app.include_router(organizations.router)  # Organization/account management
-app.include_router(merchants.router)      # Merchant configuration
-app.include_router(auth.router)           # Authentication endpoints
+app.include_router(organization_api.router)  # Organization account management
+app.include_router(merchant_api.router)  # Organization account management
+app.include_router(auth_api.router)  # Authentication endpoints
 
 
 @app.get("/health")
 async def health_check():
-   """Payment gateway health check endpoint.
+    """Payment gateway health check endpoint.
 
-   Verifies:
-   - API service status
-   - Payment provider connectivity
-   - Critical service dependencies
+    Verifies:
+    - API service status
+    - Payment provider connectivity
+    - Critical service dependencies
 
-   Returns:
-       dict: Health status containing:
-           - status: Current service status ("healthy" or "unhealthy")
-           - service: Service identifier ("payment-gateway")
-   """
-   return {"status": "healthy", "service": "payment-gateway"}
+    Returns:
+        dict: Health status containing:
+            - status: Current service status ("healthy" or "unhealthy")
+            - service: Service identifier ("payment-gateway")
+    """
+    return {"status": "healthy", "service": "payment-gateway"}
