@@ -15,10 +15,11 @@ Note:
    and proper security settings in a production environment.
 """
 
+from fastadmin import fastapi_app as admin_app
 from fastapi import FastAPI
 
-from app.core.auth.ports import api as auth_api
-from app.core.accounts.ports.api import merchant_api, organization_api
+from app.accounts.ports.rest.router import accounts_router
+from app.common.adapters.db.sql_model.session import create_db_and_tables
 
 project_description = """
    Payment Gateway microservice providing secure payment processing capabilities.
@@ -45,9 +46,13 @@ app = FastAPI(
 
 
 # API Routes
-app.include_router(organization_api.router)  # Organization account management
-app.include_router(merchant_api.router)  # Organization account management
-app.include_router(auth_api.router)  # Authentication endpoints
+app.mount("/admin", admin_app)
+app.include_router(accounts_router)  # Accounts Manager Router
+
+
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
 
 
 @app.get("/health")

@@ -17,8 +17,8 @@ Note:
 
 import typer
 from rich import print
-from app.core.auth.ports.cli import auth_app
-from app.core.accounts.ports.cli import accounts_app
+
+from app.accounts.ports.cli import accounts_app
 
 app = typer.Typer(
     help="Management CLI for Payment Gateway microservice",
@@ -26,15 +26,9 @@ app = typer.Typer(
 )
 
 app.add_typer(
-    auth_app,
-    name="auth",
-    help="User authentication and management commands",
-)
-
-app.add_typer(
     accounts_app,
     name="accounts",
-    help="Organization and merchant management commands",
+    help="Organization, user and merchant management commands",
 )
 
 
